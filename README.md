@@ -39,7 +39,10 @@ brainyMcBrain/
 │   ├── 40Jarigen/claude.md
 │   ├── DPO-Dashboard/CLAUDE.md
 │   └── ilumenTool/claude.md
-├── sync.sh                          ← Sync script (pull/push/status/discover)
+├── skills-external/                 ← External skill repos (git submodules)
+│   └── anthropic/                   ← github.com/anthropics/skills
+│       └── skills/                  ← 17 community skills (auto-updated)
+├── sync.sh                          ← Sync script (pull/push/status/discover/update-external)
 ├── .sync-config.json                ← Project → path mappings
 └── README.md
 ```
@@ -71,13 +74,30 @@ This replaces the old approach of syncing monolithic claude.md files back and fo
 The `sync.sh` script now serves a **backup/reference** role — it snapshots the original project claude.md files into `projects-archive/`. This is NOT the source of truth; the modular files are.
 
 ```bash
-./sync.sh status     # Check if project originals have drifted from archive
-./sync.sh pull       # Snapshot latest originals into archive
-./sync.sh push       # Restore archive copies back to project repos (rare)
-./sync.sh discover   # Scan PC for new repos with claude.md files
+./sync.sh status           # Check if project originals have drifted from archive
+./sync.sh pull             # Snapshot latest originals into archive
+./sync.sh push             # Restore archive copies back to project repos (rare)
+./sync.sh discover         # Scan PC for new repos with claude.md files
 ./sync.sh add <name> <path>  # Track a new project's original file
-./sync.sh auto       # Pull + commit + push (cron runs daily at midnight)
+./sync.sh update-external  # Update external skill repos (submodules)
+./sync.sh auto             # Pull + update externals + commit + push (cron daily)
 ```
+
+## External Skills
+
+The [anthropics/skills](https://github.com/anthropics/skills) repo is tracked as a git submodule in `skills-external/anthropic/`. It's updated automatically during the daily cron sync.
+
+To update manually:
+```bash
+./sync.sh update-external
+```
+
+To use an external skill in a project, reference it via:
+```
+@skills-external/anthropic/skills/<skill-name>/CLAUDE.md
+```
+
+Available skills: algorithmic-art, brand-guidelines, canvas-design, claude-api, doc-coauthoring, docx, frontend-design, internal-comms, mcp-builder, pdf, pptx, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing, xlsx
 
 ## Adding a New Project
 

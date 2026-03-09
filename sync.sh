@@ -8,7 +8,8 @@
 #   ./sync.sh push          Push from this repo → project repos
 #   ./sync.sh status        Show diff status for each project
 #   ./sync.sh discover      Scan for new claude.md files not yet tracked
-#   ./sync.sh auto          Pull → commit → push to GitHub (for cron)
+#   ./sync.sh auto          Pull → update externals → commit → push (for cron)
+#   ./sync.sh update-external  Update external skill repos (submodules)
 #
 # Config: .sync-config.json (maps project names to source paths)
 # ============================================================================
@@ -204,11 +205,51 @@ cmd_discover() {
     fi
 }
 
+cmd_update_external() {
+    echo -e "\n${BLUE}══ Updating external skill repos (submodules) ══${NC}"
+
+    cd "$SCRIPT_DIR"
+
+    if [[ ! -f .gitmodules ]]; then
+        echo -e "  ${YELLOW}No submodules configured.${NC}"
+        return 0
+    fi
+
+    local updated=0
+    local failed=0
+
+    # Update each submodule to latest remote main
+    while IFS= read -r submodule_path; do
+        local name
+        name=$(basename "$submodule_path")
+        local old_sha new_sha
+        old_sha=$(git -C "$submodule_path" rev-parse HEAD 2>/dev/null || echo "none")
+
+        if git submodule update --remote --merge -- "$submodule_path" 2>/dev/null; then
+            new_sha=$(git -C "$submodule_path" rev-parse HEAD 2>/dev/null || echo "none")
+            if [[ "$old_sha" != "$new_sha" ]]; then
+                echo -e "  ${GREEN}✓${NC} $name — updated"
+                ((updated++))
+            else
+                echo -e "  · $name — already up to date"
+            fi
+        else
+            echo -e "  ${RED}✗${NC} $name — update failed"
+            ((failed++))
+        fi
+    done < <(git config --file .gitmodules --get-regexp path | awk '{print $2}')
+
+    echo -e "\nSummary: $updated updated, $failed failed"
+}
+
 cmd_auto() {
-    echo -e "${BLUE}══ Auto-sync: pull → commit → push to GitHub ══${NC}"
+    echo -e "${BLUE}══ Auto-sync: pull → update externals → commit → push ══${NC}"
 
     # Pull latest from project repos
     cmd_pull
+
+    # Update external skill repos
+    cmd_update_external
 
     cd "$SCRIPT_DIR"
 
@@ -276,20 +317,22 @@ case "${1:-help}" in
     push)     cmd_push ;;
     status)   cmd_status ;;
     discover) cmd_discover ;;
-    auto)     cmd_auto ;;
-    add)      shift; cmd_add "$@" ;;
+    auto)             cmd_auto ;;
+    update-external)  cmd_update_external ;;
+    add)              shift; cmd_add "$@" ;;
     help|*)
         echo "brainyMcBrain — claude.md sync manager"
         echo ""
         echo "Usage: ./sync.sh <command>"
         echo ""
         echo "Commands:"
-        echo "  pull       Pull claude.md files from project repos into this repo"
-        echo "  push       Push claude.md files from this repo back to project repos"
-        echo "  status     Show sync status for each tracked project"
-        echo "  discover   Scan PC for new, untracked claude.md files"
-        echo "  add <name> <path>  Add a new project to track"
-        echo "  auto       Pull + commit + push to GitHub (for cron jobs)"
-        echo "  help       Show this help"
+        echo "  pull              Pull claude.md files from project repos into this repo"
+        echo "  push              Push claude.md files from this repo back to project repos"
+        echo "  status            Show sync status for each tracked project"
+        echo "  discover          Scan PC for new, untracked claude.md files"
+        echo "  add <name> <path> Add a new project to track"
+        echo "  update-external   Update external skill repos (git submodules)"
+        echo "  auto              Pull + update externals + commit + push (for cron)"
+        echo "  help              Show this help"
         ;;
 esac

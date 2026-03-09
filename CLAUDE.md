@@ -65,6 +65,12 @@ Then:
 @domains/iot-hardware.md
 @domains/event-planning.md
 
+## External Skills (from Anthropic)
+
+Community skills from [anthropics/skills](https://github.com/anthropics/skills) live in `skills-external/anthropic/skills/`. Use them via `@skills-external/anthropic/skills/<name>/CLAUDE.md` when relevant.
+
+Available: algorithmic-art, brand-guidelines, canvas-design, claude-api, doc-coauthoring, docx, frontend-design, internal-comms, mcp-builder, pdf, pptx, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing, xlsx
+
 ## Active Projects
 
 @projects/40Jarigen.md
