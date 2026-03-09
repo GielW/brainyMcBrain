@@ -1,6 +1,8 @@
 # 40Jarigen / Peccatum Mortale
 
 > **Skills**: @skills/* (all), @languages/web-pwa.md, @domains/event-planning.md, @domains/obsidian-vault.md, @domains/iot-hardware.md
+>
+> **External Skills**: @skills-external/anthropic/skills/frontend-design/SKILL.md, @skills-external/anthropic/skills/canvas-design/SKILL.md, @skills-external/anthropic/skills/webapp-testing/SKILL.md
 
 ## Project Overview
 
@@ -17,6 +19,9 @@ This project uses:
 - **IoT hardware** — DS2401 1-Wire, ESP32, PCBs, pogo-pin connectors
 - **Obsidian vault** — wikilinks, session tracking, MOCs
 - **Web/PWA** — registration station app
+- **Frontend design** _(external)_ — high-craft UI for registration station
+- **Canvas design** _(external)_ — visual assets, invitations, posters
+- **Webapp testing** _(external)_ — Playwright-based PWA testing
 
 ## Key Files
 

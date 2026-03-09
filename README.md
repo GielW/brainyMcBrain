@@ -94,7 +94,7 @@ To update manually:
 
 To use an external skill in a project, reference it via:
 ```
-@skills-external/anthropic/skills/<skill-name>/CLAUDE.md
+@skills-external/anthropic/skills/<skill-name>/SKILL.md
 ```
 
 Available skills: algorithmic-art, brand-guidelines, canvas-design, claude-api, doc-coauthoring, docx, frontend-design, internal-comms, mcp-builder, pdf, pptx, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing, xlsx

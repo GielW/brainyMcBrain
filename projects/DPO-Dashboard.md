@@ -1,6 +1,8 @@
 # DPO-Dashboard
 
 > **Skills**: @skills/* (all), @languages/python.md, @domains/obsidian-vault.md, @domains/belgian-legal.md
+>
+> **External Skills**: @skills-external/anthropic/skills/pdf/SKILL.md, @skills-external/anthropic/skills/docx/SKILL.md, @skills-external/anthropic/skills/pptx/SKILL.md, @skills-external/anthropic/skills/xlsx/SKILL.md, @skills-external/anthropic/skills/webapp-testing/SKILL.md
 
 ## Project Overview
 
@@ -19,6 +21,11 @@ This project uses:
 - **Obsidian vault** — MOCs for project, architecture, legal, modules, security
 - **Belgian legal** — GDPR, GBA/APD, NIS2, CyberFundamentals
 - **CI/CD** — GitHub Actions security pipeline (pip-audit, trivy, SBOM)
+- **PDF** _(external)_ — report generation (FR-005), form filling, document merging
+- **DOCX** _(external)_ — Word document report output
+- **PPTX** _(external)_ — presentation report output
+- **XLSX** _(external)_ — spreadsheet data import/export
+- **Webapp testing** _(external)_ — Playwright-based UI/dashboard testing
 
 ## Tech Stack
 

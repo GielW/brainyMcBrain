@@ -67,7 +67,7 @@ Then:
 
 ## External Skills (from Anthropic)
 
-Community skills from [anthropics/skills](https://github.com/anthropics/skills) live in `skills-external/anthropic/skills/`. Use them via `@skills-external/anthropic/skills/<name>/CLAUDE.md` when relevant.
+Community skills from [anthropics/skills](https://github.com/anthropics/skills) live in `skills-external/anthropic/skills/`. Use them via `@skills-external/anthropic/skills/<name>/SKILL.md` when relevant.
 
 Available: algorithmic-art, brand-guidelines, canvas-design, claude-api, doc-coauthoring, docx, frontend-design, internal-comms, mcp-builder, pdf, pptx, skill-creator, slack-gif-creator, theme-factory, web-artifacts-builder, webapp-testing, xlsx
 
