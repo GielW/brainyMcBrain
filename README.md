@@ -52,27 +52,36 @@ brainyMcBrain/
 | DPO-Dashboard | python | obsidian-vault, belgian-legal | `GielW/DPO-Dashboard` |
 | ilumenTool | dart-flutter | iot-hardware | `RdFutech/ilumenTool` |
 
-## Sync Commands
+## How Knowledge Flows
+
+brainyMcBrain is the **source of truth**. The workflow:
+
+1. You're working in a project (e.g., ilumenTool)
+2. You establish a new convention or fix a recurring pattern
+3. **Claude flags it**: _"This looks like reusable knowledge. It should be added to brainyMcBrain."_
+4. Switch to brainyMcBrain → add to the **Inbox** in `CLAUDE.md`
+5. Categorise it (use the Category Quick Reference table)
+6. Promote it to the correct skill/language/domain file
+7. Delete from inbox
+
+This replaces the old approach of syncing monolithic claude.md files back and forth.
+
+## Archive Sync (backup role)
+
+The `sync.sh` script now serves a **backup/reference** role — it snapshots the original project claude.md files into `projects-archive/`. This is NOT the source of truth; the modular files are.
 
 ```bash
-./sync.sh status     # Show sync status for each tracked project
-./sync.sh pull       # Pull claude.md files from project repos → archive
-./sync.sh push       # Push claude.md files from archive → project repos
-./sync.sh discover   # Scan PC for new, untracked claude.md files
-./sync.sh add <name> <path>  # Add a new project to track
-./sync.sh auto       # Pull + commit + push to GitHub (cron job runs hourly)
+./sync.sh status     # Check if project originals have drifted from archive
+./sync.sh pull       # Snapshot latest originals into archive
+./sync.sh push       # Restore archive copies back to project repos (rare)
+./sync.sh discover   # Scan PC for new repos with claude.md files
+./sync.sh add <name> <path>  # Track a new project's original file
+./sync.sh auto       # Pull + commit + push (cron runs daily at midnight)
 ```
-
-## Adding New Knowledge
-
-1. During a project session, you discover a reusable pattern
-2. Add it to the **Inbox** table in `CLAUDE.md` with the source project
-3. Pick the target file from the **Category Quick Reference** table
-4. Move the content to the target file
-5. Delete from inbox
 
 ## Adding a New Project
 
-1. `./sync.sh add ProjectName /path/to/ProjectName/CLAUDE.md` — tracks the original file
-2. Create `projects/ProjectName.md` — slim project-specific context (reference the skills/languages/domains it uses)
+1. `./sync.sh add ProjectName /path/to/ProjectName/CLAUDE.md` — tracks the original for archive
+2. Create `projects/ProjectName.md` — slim project-specific context referencing skills/languages/domains
 3. Update this README
+4. Optionally add a new language/domain file if the project needs one not yet covered

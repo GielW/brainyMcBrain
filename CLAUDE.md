@@ -4,6 +4,38 @@
 
 ---
 
+## ⚠️ Brain Update Rule — READ THIS FIRST
+
+**This file is the source of truth for all projects.** When working in ANY project session (brainyMcBrain or any other repo), follow this rule:
+
+> **Whenever you learn something new, establish a convention, fix a pattern, or make a decision that could apply beyond the current project — tell the user:**
+>
+> _"This looks like reusable knowledge. It should be added to the brainyMcBrain repository. I'll note it for the inbox."_
+
+Then:
+1. **If currently in brainyMcBrain**: Add it directly to the Inbox table below, or promote it straight to the correct skill/domain/language file
+2. **If in another repo**: Remind the user to switch to brainyMcBrain and add it. Provide the exact text to add and the target file
+
+### What Triggers a Brain Update
+
+| Trigger | Example |
+|---------|---------|
+| New convention established | "We decided to use X pattern for all services" |
+| Recurring mistake fixed | "This is the third time — let's document the rule" |
+| Tool/workflow discovered | "This CLI flag saves time — add to skills" |
+| Legal/regulatory reference | "New GBA guideline — add to belgian-legal.md" |
+| Cross-project pattern | "Both projects do this — extract to shared skill" |
+| Project-specific decision | "ilumenTool will use Riverpod — update projects/ilumenTool.md" |
+
+### What Does NOT Trigger a Brain Update
+
+- One-off debugging steps
+- Temporary workarounds
+- Project-specific data (serial numbers, API keys, etc.)
+- Information already covered by existing skill files
+
+---
+
 ## Identity
 
 @skills/identity.md
@@ -90,4 +122,15 @@ When you learn something new during any project session that could be reusable, 
 4. **Languages activate per project** — Only the relevant language module applies
 5. **Domains activate per context** — Belgian legal doesn't apply to a hardware-only session
 6. **Inbox is temporary** — Items should be promoted within the same session or the next
-7. **Sync back** — When a shared skill is updated, the `sync.sh push` propagates changes. Project-specific changes go back via `sync.sh push` to the original repos
+7. **brainyMcBrain is the source of truth** — All shared knowledge lives here. Individual project repos keep their own claude.md for standalone use, but brainyMcBrain is canonical
+8. **Always flag brain updates** — When reusable knowledge emerges in any session, notify the user (see Brain Update Rule above)
+
+## Sync — Archive & Backup
+
+The `sync.sh` script keeps a backup of the original project claude.md files in `projects-archive/`. This is a **reference/backup** role, not the source of truth.
+
+- **`sync.sh pull`** — Snapshot the latest original claude.md files from each project repo into the archive
+- **`sync.sh push`** — Push archive copies back to project repos (use sparingly — only when the original needs restoring)
+- **`sync.sh status`** — Check if originals have drifted from archive
+- **`sync.sh discover`** — Find new repos with claude.md files not yet tracked
+- **Auto-sync (cron)** — Runs daily at midnight to keep archive fresh
