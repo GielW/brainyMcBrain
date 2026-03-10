@@ -51,6 +51,7 @@ Then:
 @skills/web-design.md
 @skills/security.md
 @skills/testing.md
+@skills/council-of-masters.md
 
 ## Language Skills (activated per project)
 
@@ -104,6 +105,7 @@ When you learn something new during any project session that could be reusable, 
 | WAT architecture, workflows, tools-first | `skills/wat-framework.md` |
 | Frontend design, anti-generic guardrails, screenshot QA | `skills/web-design.md` |
 | Test conventions, coverage, test plans | `skills/testing.md` |
+| Multi-expert deliberation, complex decisions | `skills/council-of-masters.md` |
 | Python-specific style / tools | `languages/python.md` |
 | Dart/Flutter-specific style / tools | `languages/dart-flutter.md` |
 | JS/TS/PWA-specific style / tools | `languages/web-pwa.md` |
@@ -120,7 +122,7 @@ When you learn something new during any project session that could be reusable, 
 
 | Source Project | New Knowledge | Target File | Status |
 |---------------|---------------|-------------|--------|
-| _(empty — add new entries here)_ | | | |
+| brainyMcBrain | All skill/language/domain files should have YAML frontmatter (`name` + pushy `description` explaining WHEN to use). Bare MUST/NEVER rules should include WHY reasoning — models follow reasoned instructions better than bare commands. | `skills/documentation.md` | ✅ Promoted (applied directly to all 17 files) |
 
 ---
 
