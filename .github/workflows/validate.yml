@@ -1,0 +1,37 @@
+name: Validate Brain
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - "languages/**"
+      - "domains/**"
+      - "projects/**"
+      - "CLAUDE.md"
+      - ".sync-config.json"
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run brain linter
+        run: python tools/validate-brain.py
+
+      - name: Test brain compiler (dry run)
+        run: python tools/compile-brain.py all --dry-run
