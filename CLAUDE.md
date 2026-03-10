@@ -122,7 +122,7 @@ When you learn something new during any project session that could be reusable, 
 
 | Source Project | New Knowledge | Target File | Status |
 |---------------|---------------|-------------|--------|
-| brainyMcBrain | All skill/language/domain files should have YAML frontmatter (`name` + pushy `description` explaining WHEN to use). Bare MUST/NEVER rules should include WHY reasoning — models follow reasoned instructions better than bare commands. | `skills/documentation.md` | ✅ Promoted (applied directly to all 17 files) |
+| | | | |
 
 ---
 

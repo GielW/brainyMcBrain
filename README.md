@@ -20,8 +20,11 @@ brainyMcBrain/
 │   ├── project-tracking.md          ← TODOs, session logs, phases, checklists
 │   ├── code-quality.md              ← Lint/format/analyze rules, naming, imports
 │   ├── ci-cd.md                     ← GitHub Actions, pipelines, releases, SBOM
+│   ├── wat-framework.md             ← Workflows-Agents-Tools architecture
+│   ├── web-design.md                ← Frontend craft, anti-generic guardrails
 │   ├── security.md                  ← Credentials, secrets, scanning, encryption
-│   └── testing.md                   ← Test conventions, coverage, test plans
+│   ├── testing.md                   ← Test conventions, coverage, test plans
+│   └── council-of-masters.md        ← Multi-expert deliberation for complex decisions
 ├── languages/                       ← Language-specific skills (per project)
 │   ├── python.md                    ← Ruff, black, mypy, pytest, FastAPI
 │   ├── dart-flutter.md              ← Flutter analyze, package imports, platforms
@@ -35,14 +38,26 @@ brainyMcBrain/
 │   ├── 40Jarigen.md                 ← Immersive party — chess pieces, puzzles
 │   ├── DPO-Dashboard.md             ← GDPR compliance dashboard — 15 modules
 │   └── ilumenTool.md                ← IoT production tool — Flutter, Firebase
+├── compiled/                        ← Auto-generated standalone claude.md per project
+│   ├── 40Jarigen/claude.md
+│   ├── DPO-Dashboard/CLAUDE.md
+│   └── ilumenTool/claude.md
 ├── projects-archive/                ← Original full claude.md files (reference)
 │   ├── 40Jarigen/claude.md
 │   ├── DPO-Dashboard/CLAUDE.md
 │   └── ilumenTool/claude.md
+├── tools/                           ← Automation scripts
+│   ├── compile-brain.py             ← Assembles modular brain → project claude.md
+│   ├── validate-brain.py            ← Lints brain for consistency (CI + local)
+│   └── todo-to-issues.py            ← Syncs TODO tables → GitHub Issues
 ├── skills-external/                 ← External skill repos (git submodules)
 │   └── anthropic/                   ← github.com/anthropics/skills
 │       └── skills/                  ← 17 community skills (auto-updated)
-├── sync.sh                          ← Sync script (pull/push/status/discover/update-external)
+├── .github/workflows/               ← GitHub Actions
+│   ├── validate.yml                 ← Lint brain on push (auto)
+│   ├── sync-to-projects.yml         ← Compile + push claude.md to repos (manual)
+│   └── todo-to-issues.yml           ← Sync TODOs to GitHub Issues (manual)
+├── sync.sh                          ← Local sync (pull/push/status/discover)
 ├── .sync-config.json                ← Project → path mappings
 └── README.md
 ```
@@ -69,9 +84,31 @@ brainyMcBrain is the **source of truth**. The workflow:
 
 This replaces the old approach of syncing monolithic claude.md files back and forth.
 
+## Brain Compiler
+
+The compiler assembles the modular brain into **project-specific standalone claude.md files**. Each compiled file includes only the skills, languages, and domains that project needs — all inlined into one self-contained file.
+
+```bash
+python3 tools/compile-brain.py all              # Compile all projects → compiled/
+python3 tools/compile-brain.py ilumenTool       # Compile one project
+python3 tools/compile-brain.py all --dry-run    # Preview without writing
+```
+
+Output goes to `compiled/<project>/<claude.md>`. These compiled files are what gets pushed to project repos via the sync workflow.
+
+## Brain Linter
+
+Validates internal consistency — catches broken imports, orphan files, missing frontmatter, and config drift.
+
+```bash
+python3 tools/validate-brain.py                 # Run all checks
+```
+
+Runs automatically on every push to `main` via the **Validate Brain** GitHub Action.
+
 ## Archive Sync (backup role)
 
-The `sync.sh` script now serves a **backup/reference** role — it snapshots the original project claude.md files into `projects-archive/`. This is NOT the source of truth; the modular files are.
+The `sync.sh` script serves a **backup/reference** role — it snapshots the original project claude.md files into `projects-archive/`.
 
 ```bash
 ./sync.sh status           # Check if project originals have drifted from archive
@@ -83,20 +120,24 @@ The `sync.sh` script now serves a **backup/reference** role — it snapshots the
 ./sync.sh auto             # Pull + update externals + commit + push (cron daily)
 ```
 
-### GitHub Action — Push to Projects
+### GitHub Action — Sync claude.md to Projects
 
-A manual GitHub Action lets you push updated claude.md files from brainyMcBrain to any project repo — without needing local access.
+Compiles the brain and pushes the result to project repos.
 
 1. Go to **Actions → Sync claude.md to projects**
 2. Click **Run workflow**
 3. Pick a specific project or `all`
-4. The action commits the update directly to the project's default branch
+4. The action compiles the brain, then commits the compiled file to the project's default branch
 
 **Setup:** Add a Personal Access Token as `BRAIN_SYNC_PAT` in this repo's secrets. The token needs `repo` scope (or fine-grained: Contents read/write) for the target repos.
 
+### GitHub Action — Validate Brain
+
+Runs automatically on every push to `main` that touches skill, language, domain, project files, or CLAUDE.md. Also runs on pull requests.
+
 ### GitHub Action — Sync TODOs to GitHub Issues
 
-A second Action parses TODO/progress markdown files from each project and creates/updates/closes GitHub Issues to match.
+A manual Action that parses TODO/progress markdown files from each project and creates/updates/closes GitHub Issues to match.
 
 1. Go to **Actions → Sync TODOs to GitHub Issues**
 2. Click **Run workflow**

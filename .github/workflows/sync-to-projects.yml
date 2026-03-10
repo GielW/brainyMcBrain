@@ -23,42 +23,53 @@ jobs:
     steps:
       - name: Checkout brainyMcBrain
         uses: actions/checkout@v4
+        with:
+          submodules: true
 
-      - name: Push claude.md to project repos
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile brain
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.project }}" == "all" ]]; then
+            python tools/compile-brain.py all
+          else
+            python tools/compile-brain.py "${{ inputs.project }}"
+          fi
+
+      - name: Push compiled claude.md to project repos
         env:
           GH_TOKEN: ${{ secrets.BRAIN_SYNC_PAT }}
           TARGET_PROJECT: ${{ inputs.project }}
         run: |
           set -euo pipefail
 
-          # Read project list from sync config
           PROJECTS=$(jq -c '.projects[]' .sync-config.json)
 
           push_to_repo() {
-            local name repo target_file repo_path
+            local name repo target_file
             name=$(echo "$1" | jq -r '.name')
             repo=$(echo "$1" | jq -r '.repo')
             target_file=$(echo "$1" | jq -r '.target_file')
-            repo_path=$(echo "$1" | jq -r '.repo_path')
 
-            local source_file="$repo_path"
+            local source_file="compiled/${name}/${target_file}"
 
             if [[ ! -f "$source_file" ]]; then
-              echo "::warning::$name — archive file not found: $source_file"
+              echo "::warning::$name — compiled file not found: $source_file"
               return 0
             fi
 
             echo "── Syncing $name ($repo) ──"
 
-            # Clone target repo (shallow, single branch)
             local tmpdir
             tmpdir=$(mktemp -d)
             git clone --depth 1 "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" "$tmpdir"
 
-            # Copy the file
             cp "$source_file" "$tmpdir/$target_file"
 
-            # Check for changes
             cd "$tmpdir"
             if git diff --quiet; then
               echo "  ✓ $name — already up to date"
@@ -66,7 +77,7 @@ jobs:
               git config user.name "brainyMcBrain sync"
               git config user.email "brain-sync[bot]@users.noreply.github.com"
               git add "$target_file"
-              git commit -m "sync: update $target_file from brainyMcBrain"
+              git commit -m "sync: update $target_file from brainyMcBrain (compiled)"
               git push
               echo "  ✓ $name — pushed update"
             fi
@@ -75,7 +86,6 @@ jobs:
             rm -rf "$tmpdir"
           }
 
-          # Process projects
           echo "$PROJECTS" | while IFS= read -r project; do
             project_name=$(echo "$project" | jq -r '.name')
 
