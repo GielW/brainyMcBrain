@@ -11,13 +11,13 @@
 - **Repository**: `GielW/DPO-Dashboard` (private)
 - **License**: MIT
 - **Language**: Python 3.11+
-- **Status**: Phase 0 — Project Definition (architecture & specs complete)
-- **Version**: 0.4.0
+- **Status**: Phase 1 — Core Dashboard (in progress)
+- **Version**: 0.5.0
 
 ## Active Skills
 
 This project uses:
-- **Python** — FastAPI, SQLAlchemy, Pydantic, Jinja2, pytest
+- **Python** — Streamlit, SQLAlchemy, Alembic, Pydantic, pytest
 - **Obsidian vault** — MOCs for project, architecture, legal, modules, security
 - **Belgian legal** — GDPR, GBA/APD, NIS2, CyberFundamentals
 - **CI/CD** — GitHub Actions security pipeline (pip-audit, trivy, SBOM)
@@ -96,8 +96,19 @@ GitHub Actions workflow (`.github/workflows/security-scan.yml`): push to `main`,
 
 ## Current Phase
 
-**Phase 0** — Project Definition ✅  
-**Next**: Phase 1 — Core Dashboard (database models, Streamlit skeleton, data layer, DPIA screening, PDF reports)
+**Phase 0** — Project Definition ✅
+**Phase 1** — Core Dashboard 🟡 In Progress
+
+Completed in Phase 1:
+- ✅ 17 SQLAlchemy models + Alembic migration (21 tables)
+- ✅ 187 seed records (Futech + web research)
+- ✅ Data repositories (CRUD) for all modules
+- ✅ Streamlit dashboard with 11 pages + navigation
+- ✅ Dashboard overview page with KPIs
+- ✅ CRUD forms (add/edit/delete) on all 8 data pages
+- ✅ Settings & configuration UI
+
+Remaining Phase 1: user authentication (local)
 
 ## Important Notes
 
