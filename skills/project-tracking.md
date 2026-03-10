@@ -1,5 +1,12 @@
 # Project Tracking
 
+## Planning Discipline
+
+- **Plan before building** — Enter plan mode for any non-trivial task (3+ steps or architectural decisions)
+- Write a brief spec or checklist before you start coding
+- If something goes sideways mid-task, **STOP and re-plan** — don't keep pushing a broken approach
+- Use planning for verification steps too, not just building
+
 ## TODO Management
 
 - All task tracking lives in **dedicated files** (e.g., `docs/TODO.md`, `meta/session-progress.md`)
@@ -59,6 +66,20 @@ Every project should define its "linked files" that must be updated together. Th
 - [ ] Progress tracking — add to module table
 - [ ] README — update features and structure
 - [ ] CLAUDE.md — update module reference
+
+## Verification Before Done
+
+- **Never mark a task complete without proving it works** — run tests, check logs, demonstrate correctness
+- Diff behaviour between `main` and your changes when relevant
+- Ask yourself: "Would a senior engineer approve this?"
+- For CI-visible work, verify the pipeline is green before moving on
+
+## Self-Improvement Loop
+
+- After **any correction** from the user, capture the pattern in the project's `tasks/lessons.md` (or equivalent)
+- Write rules for yourself that prevent the same mistake recurring
+- Review lessons at the start of each session for the active project
+- If the lesson is cross-project, route it to the brainyMcBrain Inbox (see Brain Update Rule)
 
 ## Roadmap Format
 

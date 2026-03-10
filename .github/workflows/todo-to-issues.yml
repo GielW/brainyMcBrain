@@ -1,0 +1,81 @@
+name: Sync TODOs to GitHub Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: "Project to sync (or 'all')"
+        required: true
+        default: "all"
+        type: choice
+        options:
+          - all
+          - 40Jarigen
+          - DPO-Dashboard
+          - ilumenTool
+      dry_run:
+        description: "Dry run (preview only, no changes)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sync-todos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout brainyMcBrain
+        uses: actions/checkout@v4
+
+      - name: Checkout project repos
+        env:
+          GH_TOKEN: ${{ secrets.BRAIN_SYNC_PAT }}
+        run: |
+          set -euo pipefail
+          GITHUB_BASE="$GITHUB_WORKSPACE/.projects"
+          mkdir -p "$GITHUB_BASE"
+
+          # Clone each project's TODO file (sparse checkout)
+          jq -c '.projects[] | select(.todo_file)' .sync-config.json | while IFS= read -r project; do
+            name=$(echo "$project" | jq -r '.name')
+            repo=$(echo "$project" | jq -r '.repo')
+            todo_file=$(echo "$project" | jq -r '.todo_file')
+
+            if [[ "${{ inputs.project }}" != "all" ]] && [[ "${{ inputs.project }}" != "$name" ]]; then
+              continue
+            fi
+
+            echo "Cloning $repo (sparse: $todo_file)..."
+            git clone --depth 1 --filter=blob:none --sparse \
+              "https://x-access-token:${GH_TOKEN}@github.com/${repo}.git" \
+              "$GITHUB_BASE/$name"
+            cd "$GITHUB_BASE/$name"
+            git sparse-checkout set "$(dirname "$todo_file")"
+            cd "$GITHUB_WORKSPACE"
+          done
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync TODOs to Issues
+        env:
+          GH_TOKEN: ${{ secrets.BRAIN_SYNC_PAT }}
+        run: |
+          set -euo pipefail
+
+          # Patch config to use CI paths
+          GITHUB_BASE="$GITHUB_WORKSPACE/.projects"
+          jq --arg base "$GITHUB_BASE" '.github_base = $base' .sync-config.json > /tmp/sync-config.json
+          cp /tmp/sync-config.json .sync-config.json
+
+          ARGS="${{ inputs.project }}"
+          if [[ "${{ inputs.dry_run }}" == "true" ]]; then
+            ARGS="$ARGS --dry-run"
+          fi
+
+          python tools/todo-to-issues.py $ARGS

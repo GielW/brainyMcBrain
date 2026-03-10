@@ -29,6 +29,14 @@ When AI handles every step directly, accuracy compounds negatively (90% per step
 - Credentials and API keys live in `.env` — never stored anywhere else
 - Scripts are consistent, testable, and fast
 
+## Subagent Strategy
+
+- **Use subagents liberally** to keep the main context window clean and focused
+- Offload research, exploration, and parallel analysis to subagents
+- For complex problems, throw more compute at it — spin up subagents rather than cramming everything into one context
+- **One task per subagent** for focused execution and cleaner results
+- Keep the main agent for orchestration and decision-making; let subagents do the heavy lifting
+
 ## Operating Rules
 
 ### 1. Tool-First

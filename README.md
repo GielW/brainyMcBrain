@@ -83,6 +83,39 @@ The `sync.sh` script now serves a **backup/reference** role — it snapshots the
 ./sync.sh auto             # Pull + update externals + commit + push (cron daily)
 ```
 
+### GitHub Action — Push to Projects
+
+A manual GitHub Action lets you push updated claude.md files from brainyMcBrain to any project repo — without needing local access.
+
+1. Go to **Actions → Sync claude.md to projects**
+2. Click **Run workflow**
+3. Pick a specific project or `all`
+4. The action commits the update directly to the project's default branch
+
+**Setup:** Add a Personal Access Token as `BRAIN_SYNC_PAT` in this repo's secrets. The token needs `repo` scope (or fine-grained: Contents read/write) for the target repos.
+
+### GitHub Action — Sync TODOs to GitHub Issues
+
+A second Action parses TODO/progress markdown files from each project and creates/updates/closes GitHub Issues to match.
+
+1. Go to **Actions → Sync TODOs to GitHub Issues**
+2. Click **Run workflow**
+3. Pick a project or `all`, and optionally enable **Dry run** to preview
+4. The action creates issues with labels (`phase:P1-core`, `priority:high`, `synced-from-todo`) and closes issues whose TODO status is "Done"
+
+**Supported formats:**
+- ilumenTool-style: `| # | Phase | Status | Priority | Description |`
+- DPO-Dashboard-style: `| Task | ✅ Done / ⬜ Not started | Date |`
+
+The parser script lives at `tools/todo-to-issues.py` and can also be run locally:
+```bash
+python3 tools/todo-to-issues.py --dry-run          # Preview all projects
+python3 tools/todo-to-issues.py ilumenTool          # Sync one project
+python3 tools/todo-to-issues.py all                 # Sync all projects
+```
+
+**Setup:** Same `BRAIN_SYNC_PAT` secret — needs `repo` scope + Issues write permission.
+
 ## External Skills
 
 The [anthropics/skills](https://github.com/anthropics/skills) repo is tracked as a git submodule in `skills-external/anthropic/`. It's updated automatically during the daily cron sync.

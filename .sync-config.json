@@ -4,16 +4,25 @@
   "projects": [
     {
       "name": "40Jarigen",
+      "repo": "GielW/40Jarigen",
+      "target_file": "claude.md",
+      "todo_file": "meta/session-progress.md",
       "source": "/mnt/64AA9536AA950628/GitHub/40Jarigen/claude.md",
       "repo_path": "projects-archive/40Jarigen/claude.md"
     },
     {
       "name": "DPO-Dashboard",
+      "repo": "GielW/DPO-Dashboard",
+      "target_file": "CLAUDE.md",
+      "todo_file": "docs/progress/PROGRESS.md",
       "source": "/mnt/64AA9536AA950628/GitHub/DPO-Dashboard/CLAUDE.md",
       "repo_path": "projects-archive/DPO-Dashboard/CLAUDE.md"
     },
     {
       "name": "ilumenTool",
+      "repo": "RdFutech/ilumenTool",
+      "target_file": "claude.md",
+      "todo_file": "ilumentool/docs/TODO.md",
       "source": "/mnt/64AA9536AA950628/GitHub/ilumenTool/claude.md",
       "repo_path": "projects-archive/ilumenTool/claude.md"
     }

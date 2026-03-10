@@ -48,3 +48,11 @@ created: 2026-03-09
 
 - Follow [Semantic Versioning](https://semver.org/): `MAJOR.MINOR.PATCH`
 - Keep version in sync across: project config, CHANGELOG, CLAUDE.md, and any charter/progress docs
+
+## Source Attribution
+
+- **Always reference data sources** — when using external knowledge, templates, prompts, frameworks, or data, record where it came from
+- Credit format: a simple `Source:` line, footnote, or link to the original
+- This applies to: research findings, copied/adapted prompts, design patterns borrowed from other projects, legal references, third-party templates
+- For brainyMcBrain specifically: when a skill or convention originates from an external source (blog post, GitHub repo, community prompt), note it at the top of the file or inline
+- Give credit where credit is due — don't pass off external work as your own

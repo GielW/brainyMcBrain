@@ -158,8 +158,11 @@ libstdc++-12-dev libsecret-1-dev libjsoncpp-dev libudev-dev libserialport-dev
 
 - `ProductFamily` enum — 9 families (ILB, ILB2, ILC, ILC2, ILH, ILH-SGR, ILS, PBM, SPS) with `.code` and `.fromCode()` factory
 - `ProgramTarget` enum — 8 programming targets with per-target config (MCU, ESP, USB, serial, Firebase flags)
+- `ProgrammingMode` enum — `parallel` (default) or `sequential` (ILH)
+- `ProgramTargetConfig` — per-target configuration: hasEsp, hasAvr, usesCpUsb, needsSerialNumber, firebaseEnabled, hasBootloader, needsEeprom, avrBaudRate, avrProgrammerTool, programmingMode, needsProductInfoInit
 - `ProductDefinition` — display name, image file, page title, isSmart flag, sub-types, legacy XML codes
-- `ProductRegistry` static class — maps for TB device types, TB shared/server attributes, AVR signatures/fuses/parts, ESP asset paths, firmware paths, build order types, and convenience methods
+- `FirmwareScanConfig` — pathPrefix + extension for firmware file scanning
+- `ProductRegistry` static class — maps for TB device types, TB shared/server attributes, AVR signatures/fuses/parts/bootloader paths/firmware paths, ESP asset paths/firmware paths, firmware scan paths/aliases, build order types, and convenience methods
 
 When adding a new product, update **all** of these locations:
 
@@ -379,7 +382,7 @@ This is documented in `firestore.rules` (reference file, deployed manually via F
 
 - **Monolithic files**: `programmingView.dart` (2,385 lines), ~~`deviceCloning.dart` (1,712 lines)~~ (⚠️ deprecated — feature planned for removal), `ilusmart1Setup.dart` (1,550 lines) — planned for decomposition.
 - **~~Duplicate files~~**: ✅ Fixed — `PlatformInfo.dart` and `ProductButtonWidget.dart` duplicates moved to `old_files/`; canonical copies remain in `lib/Other/`.
-- **~~Product if-chains~~**: ✅ Fixed (March 2026) — created `product_registry.dart` with `ProductFamily` enum, `ProgramTarget` enum, and `ProductRegistry` class. Refactored 10 files: product_button_widget (display names), build_order_form_view (product/sub-types), product_manager (TB device type), thingsboard_connector (shared/server attrs), production_view (sub-types, isSmart, XML codes), programming_view (_config array, fuses, MCU parts, page titles), avr_dude (signatures), espressif (bootloader/firmware/partition/boot_app paths), testing_view/ilc_testing_view/ils_testing (page titles). Remaining complex if-chains: espressif `burnEspConfig()` SPIFFS JSON, firmware_connector `checkFWs()`, product_button_widget navigation routing.
+- **~~Product if-chains~~**: ✅ Fixed (March 2026) — created `product_registry.dart` with `ProductFamily` enum, `ProgramTarget` enum, and `ProductRegistry` class. Refactored 10 files: product_button_widget (display names), build_order_form_view (product/sub-types), product_manager (TB device type), thingsboard_connector (shared/server attrs), production_view (sub-types, isSmart, XML codes), programming_view (_config array, fuses, MCU parts, page titles), avr_dude (signatures), espressif (bootloader/firmware/partition/boot_app paths), testing_view/ilc_testing_view/ils_testing (page titles). Task #2: extended registry with `ProgrammingMode`, `ProgramTargetConfig` (6 new fields), `FirmwareScanConfig`, AVR bootloader/firmware path maps; refactored programming_view (`_config` removed, 8 if-chains → registry), avr_dude (bootloader + main-app paths → registry), firmware_connector (`checkFWs` switch → registry). Remaining complex if-chains: espressif `burnEspConfig()` SPIFFS JSON, product_button_widget navigation routing.
 - **~~`.tostring()` bug~~**: ✅ Fixed — lowercase `tostring()` replaced with `toString()` in `ilusmart1Setup.dart` and `ILS_Testing.dart`.
 - **~~Lint cleanup (46 issues)~~**: ✅ Fixed — reduced from 46 to 4 info-level issues. Categories fixed: `empty_statements` (10), `use_key_in_widget_constructors` (12), `dangling_library_doc_comments` (6), `prefer_is_not_empty` (4), `avoid_single_cascade_in_expression_statements` (10). Remaining: 2× `unnecessary_overrides`, 1× `collection_methods_unrelated_type`, 1× `unrelated_type_equality_checks`.
 - **espressif.dart forEach refactor** — ⚠️ Cascade `.forEach()` was refactored to regular `.forEach()` in 10 locations. **Code review (March 9):** All 6 functions verified correct; bug fixed — `ersaseEspFlash()` stderr was commented out, now restored; all 5 `Process.run()` functions now check both stdout and stderr for success strings (esptool v5+ compatibility). Validated: T18 (ILC), T21 (ILS), T22 (ILH-SGR) PASS. Still need hardware tests: ILB2 (T19), ILH (T20), and Windows (T23). See `test/test_plan.md` and TODO #44.
@@ -398,7 +401,7 @@ This is documented in `firestore.rules` (reference file, deployed manually via F
 ## Testing
 
 - `test/main_test.dart` exists but is minimal.
-- `test/test_plan.md` — 66 manual test cases covering ESP programming (25), Firestore migration (20), Firebase abstraction (4), auto-update (3), and build orders (14). 5 tests passed (T11, T13, T18, T21, T22).
+- `test/test_plan.md` — 99 manual test cases covering ESP programming (25), Firestore migration (20), Firebase abstraction (4), auto-update (3), build orders (16), and product registry refactoring (31). 5 tests passed (T11, T13, T18, T21, T22).
 - `scripts/test_auto_update.dart` has 17 end-to-end tests for the auto-updater.
 - No comprehensive unit or widget tests yet (planned Phase 4).
 
@@ -423,10 +426,10 @@ This is documented in `firestore.rules` (reference file, deployed manually via F
 | Phase | Status | Focus |
 | ----- | ------ | ----- |
 | Phase 0 | ✅ Done | Security — secrets externalized, logging redacted |
-| Phase 1 | 🟡 In Progress | Core cleanup: auto-updater (done), ILH-SGR (done), lint cleanup 46→4 info (done), Firebase abstraction (done), GSheets→Firestore (done), ESP bugs (done), error handling (#18, #19, #31, #32, #37), Linux ports (#24–28), regression testing (#44) |
-| Phase 2 | 🟡 In Progress | Architecture refactoring: ~~product registry/enum (#41)~~ ✅ Done, settings from `_prodCat` (#2, #8), ~~file naming standardisation (#42)~~ ✅ Done, credential rotation, state management (Riverpod/Bloc), wire `ilumentool_db` |
+| Phase 1 | 🟡 In Progress | Core cleanup: auto-updater (done), ILH-SGR (done), lint cleanup 46→4 info (done), Firebase abstraction (done), GSheets→Firestore (done), ESP bugs (done), **app-wide logging (#13, #92–#99)**, error handling (#18, #19, #31, #32, #37), Linux ports (#24–28), regression testing (#44) |
+| Phase 2 | 🟡 In Progress | Architecture refactoring: ~~product registry/enum (#41)~~ ✅ Done, ~~settings from `_prodCat` (#2)~~ ✅ Done, AVR part config (#8), ~~file naming standardisation (#42)~~ ✅ Done, credential rotation, state management (Riverpod/Bloc), wire `ilumentool_db` |
 | Phase 3 | Not started | View decomposition: break monoliths (#40), refactor ProductionView (#9) |
-| Phase 4 | Not started | Testing, logging (#13), CI/CD, documentation |
+| Phase 4 | Not started | Testing, CI/CD, documentation |
 | Extras (PX) | 🟡 Ongoing | Build orders (core done, polish #74–79), InvenTree integration (#80–90), label printing (#46–54) — independent of core phases, can be worked on at any time |
 
 See `docs/analysis/FULL_PROJECT_ANALYSIS.md` for the complete analysis with per-file issues and detailed roadmap.

@@ -47,6 +47,28 @@ Every project must have a configured linter and formatter:
 - Never swallow errors silently
 - Log errors with context (but never log credentials — see `security.md`)
 
+## Execution Discipline
+
+### Core Principles
+
+- **Simplicity first** — Make every change as simple as possible. Impact minimal code
+- **No laziness** — Find root causes. No temporary fixes. Senior developer standards
+- **Minimal impact** — Changes should only touch what's necessary. Avoid introducing bugs
+
+### Demand Elegance (Balanced)
+
+- For non-trivial changes, pause and ask: "Is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes — don't over-engineer
+- Challenge your own work before presenting it
+
+### Autonomous Problem Solving
+
+- When given a bug report: just fix it — don't ask for hand-holding
+- Point at logs, errors, failing tests — then resolve them
+- Zero context switching required from the user
+- Fix failing CI tests without being told how
+
 ## Analyzer Hygiene
 
 - When removing a field/variable, grep for **all references** (assignments, reads, comments) and clean up in the same change
