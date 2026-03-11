@@ -51,6 +51,7 @@ Then:
 @skills/wat-framework.md
 @skills/web-design.md
 @skills/security.md
+@skills/privacy-by-design.md
 @skills/testing.md
 @skills/council-of-masters.md
 
@@ -104,6 +105,7 @@ When you learn something new during any project session that could be reusable, 
 | Linting, formatting, analyzer hygiene | `skills/code-quality.md` |
 | GitHub Actions, CI pipelines, SBOM | `skills/ci-cd.md` |
 | Credentials, secrets, encryption | `skills/security.md` |
+| Privacy by Design, GDPR engineering, data minimisation, consent, DPIA | `skills/privacy-by-design.md` |
 | WAT architecture, workflows, tools-first | `skills/wat-framework.md` |
 | Frontend design, anti-generic guardrails, screenshot QA | `skills/web-design.md` |
 | Test conventions, coverage, test plans | `skills/testing.md` |
