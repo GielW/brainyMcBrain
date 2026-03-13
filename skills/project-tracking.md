@@ -64,6 +64,7 @@ Before diving into work:
 2. Check the TODO/progress file for current state and "Up Next" items
 3. Review any session handoff notes from the previous session (see Session End below)
 4. Orient yourself: what branch are we on, what's the current phase, what was last done?
+5. Verify the project file (`projects/*.md`) has a complete **Deployment & Infrastructure** section — if not, fill it in before proceeding
 
 #### Before Compaction / Context Reset — Save State
 
@@ -131,6 +132,26 @@ Every project should define its "linked files" that must be updated together. Th
 - [ ] Progress tracking — add to module table
 - [ ] README — update features and structure
 - [ ] CLAUDE.md — update module reference
+
+### On New Project — Project File Requirements
+
+Every project in `projects/*.md` **must** include a **Deployment & Infrastructure** section. Without it, agents lose critical context across sessions (wrong accounts, missing build steps, failed deploys).
+
+Required fields:
+
+- [ ] **Hosting service** — where is it deployed (Firebase, Vercel, AWS, self-hosted, etc.)
+- [ ] **Account / credentials owner** — which account owns the deployment (e.g., `user@gmail.com` — distinguish from work accounts)
+- [ ] **Project ID** — the platform-specific project identifier
+- [ ] **Build command** — full command(s) to produce a deployable artifact
+- [ ] **Deploy command** — full command(s) to ship to production
+- [ ] **Environment prerequisites** — SDK paths, required CLI tools, env vars
+- [ ] **Live URL** — the production URL where the app is accessible
+- [ ] **Database / storage** — what data stores exist and their purpose
+
+Also ensure the project file has populated (not `<!-- TODO -->`):
+
+- [ ] **Key Files** table — all important files with purpose
+- [ ] **Cross-Reference Map** — which files must be updated together
 
 ## Verification Before Done
 
